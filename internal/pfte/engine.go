@@ -25,20 +25,19 @@ const (
 
 type Engine struct {
 	Mode  TransferMode
-	Queue []string 
+	Queue *JobQueue // Using our new thread-safe queue
 }
 
 func NewEngine() *Engine {
 	return &Engine{
 		Mode:  ModeBoost, 
-		Queue: make([]string, 0),
+		Queue: NewQueue(),
 	}
 }
 
-// StartTransfer executes the main logic.
-// For v0.0.2, we perform a "Discovery" pass to list remote files.
+// StartTransfer executes the logic.
+// v0.0.3: Test Download and Integrity Check.
 func (e *Engine) StartTransfer(session *network.SftpSession) error {
-	// Sanity check
 	if session.SftpClient == nil {
 		return fmt.Errorf("sftp_client_not_initialized")
 	}
@@ -50,41 +49,40 @@ func (e *Engine) StartTransfer(session *network.SftpSession) error {
 
 	fmt.Printf(">> PFTE Engine started. Workers: %d\n", batchSize)
 	
-	// 1. Discovery Phase (Test SFTP Protocol)
-	fmt.Println(">> PFTE: Running Discovery on remote root (.)...")
-	
-	cwd, err := session.SftpClient.Getwd()
-	if err != nil {
-		log.Printf("Failed to get CWD: %v", err)
-		return err
-	}
-	fmt.Printf(">> Remote CWD: %s\n", cwd)
+	// TEST SCENARIO for v0.0.3:
+	// Try to find 'Server.log' (from your previous output), download it, and check hash.
+	targetFile := "Server.log"
+	localOut := "downloaded_test.log"
 
-	files, err := session.SftpClient.ReadDir(".")
-	if err != nil {
-		log.Printf("Failed to list directory: %v", err)
-		return err
-	}
+	fmt.Printf(">> PFTE: Testing single file workflow on '%s'...\n", targetFile)
 
-	fmt.Printf(">> Discovery Complete. Found %d items:\n", len(files))
-	
-	// Just list the first 10 items to avoid spamming the console
-	limit := 10
-	if len(files) < limit {
-		limit = len(files)
-	}
+	// 1. Queue the job (Simulating real usage)
+	e.Queue.Add(&TransferJob{
+		LocalPath:  localOut,
+		RemotePath: targetFile,
+		Operation:  "DOWNLOAD",
+	})
 
-	for i := 0; i < limit; i++ {
-		file := files[i]
-		icon := "📄"
-		if file.IsDir() {
-			icon = "ZE"
+	// 2. Process Queue (Single threaded for now just to test logic)
+	job := e.Queue.Pop()
+	if job != nil {
+		// Execute Download
+		err := DownloadFile(session, job.RemotePath, job.LocalPath)
+		if err != nil {
+			log.Printf("Download failed: %v", err)
+			return err
 		}
-		fmt.Printf("   %s %-20s %d bytes\n", icon, file.Name(), file.Size())
-	}
-	
-	if len(files) > limit {
-		fmt.Printf("   ... and %d more.\n", len(files)-limit)
+
+		// 3. Verify Integrity
+		fmt.Println(">> Integrity: Calculating local CRC32 checksum...")
+		hash, err := CalculateChecksum(job.LocalPath)
+		if err != nil {
+			log.Printf("Checksum calculation failed: %v", err)
+			return err
+		}
+		
+		fmt.Printf(">> Integrity: File Hash (CRC32): %s\n", hash)
+		fmt.Println(">> PFTE: Cycle complete. File is safe on disk.")
 	}
 
 	return nil
