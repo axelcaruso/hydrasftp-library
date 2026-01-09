@@ -6,6 +6,7 @@ package pfte
 
 import (
 	"fmt"
+	"log"
 
 	"fileripper/internal/network"
 )
@@ -34,22 +35,56 @@ func NewEngine() *Engine {
 	}
 }
 
+// StartTransfer executes the main logic.
+// For v0.0.2, we perform a "Discovery" pass to list remote files.
 func (e *Engine) StartTransfer(session *network.SftpSession) error {
-	batchSize := BatchSizeConservative
-	modeName := "Conservative"
-
-	if e.Mode == ModeBoost {
-		batchSize = BatchSizeBoost
-		modeName = "Boost"
+	// Sanity check
+	if session.SftpClient == nil {
+		return fmt.Errorf("sftp_client_not_initialized")
 	}
 
-	fmt.Printf(">> PFTE Engine started in %s mode.\n", modeName)
-	fmt.Printf(">> Strategy: Launching %d concurrent workers (Goroutines).\n", batchSize)
+	batchSize := BatchSizeConservative
+	if e.Mode == ModeBoost {
+		batchSize = BatchSizeBoost
+	}
+
+	fmt.Printf(">> PFTE Engine started. Workers: %d\n", batchSize)
 	
-	// Verification that we received a valid, open SSH client
-	if session.Client == nil {
-		fmt.Println(">> PFTE Error: Session client is nil. Did auth fail?")
-		return fmt.Errorf("invalid_session")
+	// 1. Discovery Phase (Test SFTP Protocol)
+	fmt.Println(">> PFTE: Running Discovery on remote root (.)...")
+	
+	cwd, err := session.SftpClient.Getwd()
+	if err != nil {
+		log.Printf("Failed to get CWD: %v", err)
+		return err
+	}
+	fmt.Printf(">> Remote CWD: %s\n", cwd)
+
+	files, err := session.SftpClient.ReadDir(".")
+	if err != nil {
+		log.Printf("Failed to list directory: %v", err)
+		return err
+	}
+
+	fmt.Printf(">> Discovery Complete. Found %d items:\n", len(files))
+	
+	// Just list the first 10 items to avoid spamming the console
+	limit := 10
+	if len(files) < limit {
+		limit = len(files)
+	}
+
+	for i := 0; i < limit; i++ {
+		file := files[i]
+		icon := "📄"
+		if file.IsDir() {
+			icon = "ZE"
+		}
+		fmt.Printf("   %s %-20s %d bytes\n", icon, file.Name(), file.Size())
+	}
+	
+	if len(files) > limit {
+		fmt.Printf("   ... and %d more.\n", len(files)-limit)
 	}
 
 	return nil

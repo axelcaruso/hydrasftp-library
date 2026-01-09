@@ -9,15 +9,14 @@ import (
 	"os"
 	"strconv"
 
-	// Local imports
 	"fileripper/internal/core"
 	"fileripper/internal/network"
 	"fileripper/internal/pfte"
 )
 
-// main is the entry point.
 func main() {
-	fmt.Println("FileRipper v0.0.1 - Powered by PFTE (Go Edition)")
+	// v0.0.2: Now with real SFTP capabilities
+	fmt.Println("FileRipper v0.0.2 - Powered by PFTE (Go Edition)")
 
 	if len(os.Args) < 2 {
 		printUsage()
@@ -32,9 +31,6 @@ func main() {
 		// TODO: Init API server here
 
 	case "transfer":
-		// Usage: fileripper transfer <host> <port> <user> <password>
-		// Note: Passing password via CLI args is bad practice for prod (history logs),
-		// but acceptable for this alpha test phase.
 		if len(os.Args) < 6 {
 			fmt.Println("Error: Missing arguments.")
 			fmt.Println("Usage: fileripper transfer <host> <port> <user> <password>")
@@ -54,17 +50,21 @@ func main() {
 
 		fmt.Printf(">> CLI Transfer mode engaged. Target: %s@%s:%d\n", user, host, port)
 
-		// 1. Init Network with Auth credentials
+		// 1. Init Session
 		session := network.NewSession(host, port, user, password)
 		defer session.Close()
 
-		// 2. Connect & Authenticate (SHA-256 check happens here)
+		// 2. SSH Handshake
 		if err := session.Connect(); err != nil {
 			os.Exit(1)
 		}
 
-		// 3. Start Engine
-		// We pass the authenticated session to the engine now.
+		// 3. Open SFTP Subsystem (New in v0.0.2)
+		if err := session.OpenSFTP(); err != nil {
+			os.Exit(1)
+		}
+
+		// 4. Start Engine (Now lists files)
 		engine := pfte.NewEngine()
 		if err := engine.StartTransfer(session); err != nil {
 			fmt.Printf("Error during transfer: %v\n", core.ErrPipelineStalled)
