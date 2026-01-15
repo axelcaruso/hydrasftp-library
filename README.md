@@ -93,9 +93,9 @@ Operation flags (required)
 
 The command requires one of the following flags to define the transfer direction:
 
-- `--upload <local_folder_path>`: Recursively scans the local folder and uploads all contents to the remote root directory. This enables Boost mode (64 workers).
+- `--upload <local_folder_path>`: Recursively scans the local folder and uploads all contents to the remote root directory. This enables Boost mode (128 workers).
 
-- `--download`: Downloads all files from the remote root directory. (/) to a local dump folder/. Enables Boost mode (64 workers).
+- `--download`: Downloads all files from the remote root directory. (/) to a local dump folder/. Enables Boost mode (128 workers).
 
 ### Feature Support and Roadmap
 
