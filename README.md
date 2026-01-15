@@ -1,23 +1,34 @@
 <p align="left">
   <img src="https://img.shields.io/badge/License-MPL%202.0-pink.svg" alt="License">
   <img src="https://img.shields.io/badge/Made%20with-Go-lightgreen.svg" alt="Go">
-  <img src="https://img.shields.io/badge/Status-Experimental-blue.svg" alt="Status">
-  <img src="https://img.shields.io/badge/Version-v0.2.0-orange.svg" alt="Version">
+  <img src="https://img.shields.io/badge/Status-Alpha-blue.svg" alt="Status">
+  <img src="https://img.shields.io/badge/Version-v0.3.0-orange.svg" alt="Version">
 </p>
 
 # What is FileRipper?
 
-FileRipper is an open-source library that accelerates file downloads and uploads using the SFTP protocol. It's written in Go.
+FileRipper is an open-source library that accelerates file uploads and downloads using the SFTP protocol. It is written in Go.
 
-While FileRipper is still in an experimental phase, it already significantly increases upload/download speeds. Official comparisons haven't been published yet, but it's much faster.
+Although FileRipper is still in alpha, it already significantly increases upload and download speeds.
 
 The FileRipper code is licensed under the Mozilla Public License 2.0 (MPL-2.0).
 
 ### **Important**
 
-**FileRipper is still an experimental library.** This means that, while it may work correctly in some cases, it may also experience errors, data loss, or other issues (although it is quite stable). It is still under development, so you should be prepared to encounter some problems.
+**FileRipper is still a very early-stage library.**
 
-One of these is the current inability to create folders. In other words, when uploading a file or folder containing multiple subfolders, the CLI will not create them. This is because this feature has not yet been implemented, but it is a priority for future versions.
+This means that its stability is not guaranteed, nor is it necessarily bad; it is simply a development version and still lacks many features before it can be used in production. BUT for testing, it works very well, as file corruption is negligible or incredibly low.
+
+### Benchmarks
+
+| Client | Data weight | Transferred folders | Transferred files | AVG Speed | Duration |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| FileRipper | 194.56 MiB | 497 | 3638 | 2.10 MiB/s | 1m 32s | 
+| WinSCP | 194.56 MiB | 497 | 3638 | 0.21 MiB/s | 15m 33s |  
+
+FileRipper is 10x faster
+
+---
 
 # Building FileRipper
 
@@ -93,8 +104,9 @@ The command requires one of the following flags to define the transfer direction
 | File Upload | <img src="https://img.shields.io/badge/-%E2%9C%93-brightgreen" height="20"> | Boost mode active (64 workers). |
 | File Download | <img src="https://img.shields.io/badge/-%E2%9C%93-brightgreen" height="20"> | Downloads to the local */dump* folder. |
 | SFTP Protocol | <img src="https://img.shields.io/badge/-%E2%9C%93-brightgreen" height="20"> | Go-based implementation. |
-| Transfer Stability | <img src="https://img.shields.io/badge/-%21-orange" height="20"> | *Experimental (Risk of data loss).* |
-| Directory Creation | <img src="https://img.shields.io/badge/-%E2%9C%95-red" height="20"> | Not implemented (Coming soon). |
+| Transfer Stability | <img src="https://img.shields.io/badge/-%21-lightblue" height="20"> | 	Retry system (3 attempts) per worker. |
+| Directory Creation | <img src="https://img.shields.io/badge/-%E2%9C%93-brightgreen" height="20"> | Recursive tree creation supported. |
 | SSH Keys (Key Authentication) | <img src="https://img.shields.io/badge/-%E2%9C%95-red" height="20"> | Password authentication only. |
 | OS Compatibility | <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/Windows_logo_-_2021.svg" width="15"> | Primarily optimized for Windows. |
 ---
+
