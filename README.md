@@ -107,6 +107,6 @@ The command requires one of the following flags to define the transfer direction
 | Transfer Stability | <img src="https://img.shields.io/badge/-%21-lightblue" height="20"> | 	Retry system (3 attempts) per worker. |
 | Directory Creation | <img src="https://img.shields.io/badge/-%E2%9C%93-brightgreen" height="20"> | Recursive tree creation supported. |
 | SSH Keys (Key Authentication) | <img src="https://img.shields.io/badge/-%E2%9C%95-red" height="20"> | Password authentication only. |
-| OS Compatibility | <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/Windows_logo_-_2021.svg" width="15"> | Primarily optimized for Windows. |
+| OS Compatibility | <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/Windows_logo_-_2021.svg" width="15"> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Tux.svg/960px-Tux.svg.png?20251226180606" width="15"> | Windows/Linux | 
 ---
 
