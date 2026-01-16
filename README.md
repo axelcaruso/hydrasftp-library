@@ -11,7 +11,7 @@ FileRipper is an open-source library that accelerates file uploads and downloads
 
 Although FileRipper is still in alpha, it already significantly increases upload and download speeds.
 
-The FileRipper code is licensed under the Mozilla Public License 2.0 (MPL-2.0).
+The FileRipper code is licensed under the Apache-2.0 license.
 
 ### **Important**
 
