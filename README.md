@@ -1,5 +1,5 @@
 <p align="left">
-  <img src="https://img.shields.io/badge/License-MPL%202.0-pink.svg" alt="License">
+  <img src="https://img.shields.io/badge/License-Apache%202.0-pink.svg" alt="License">
   <img src="https://img.shields.io/badge/Made%20with-Go-lightgreen.svg" alt="Go">
   <img src="https://img.shields.io/badge/Status-Alpha-blue.svg" alt="Status">
   <img src="https://img.shields.io/badge/Version-v0.3.0-orange.svg" alt="Version">
