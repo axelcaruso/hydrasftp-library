@@ -21,7 +21,7 @@ import (
 	"net"
 	"time"
 
-	"fileripper/internal/core"
+	"hydrasftp/internal/core"
 
 	"github.com/pkg/sftp"
 	"golang.org/x/crypto/ssh"

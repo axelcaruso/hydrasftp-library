@@ -20,7 +20,7 @@ import (
 	"context"
 	"sync"
 
-	"fileripper/internal/network"
+	"hydrasftp/internal/network"
 )
 
 // WorkerPool manages the swarm of goroutines.

@@ -19,22 +19,22 @@ package main
 import (
 	"context"
 	"fmt"
+	"hydrasftp"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
 
-	"fileripper"
-	"fileripper/internal/core"
-	"fileripper/internal/pfte"
-	"fileripper/internal/server"
+	"hydrasftp/internal/core"
+	"hydrasftp/internal/pfte"
+	"hydrasftp/internal/server"
 )
 
 const SessionCount = 2 // Parallel SSH Sessions
 
 func main() {
-	fmt.Println("FileRipper v0.6.0 - Powered by PFTE ")
+	fmt.Println("HydraSFTP v0.6.1 - Powered by PFTE ")
 
 	if len(os.Args) < 2 {
 		printUsage()
@@ -45,7 +45,7 @@ func main() {
 
 	switch command {
 	case "start-server":
-		port := 2935 
+		port := 2935
 		if len(os.Args) > 2 {
 			p, err := strconv.Atoi(os.Args[2])
 			if err == nil {
@@ -66,7 +66,7 @@ func main() {
 func handleTransferCLI(args []string) {
 	if len(args) < 6 {
 		fmt.Println("Error: Missing arguments.")
-		fmt.Println("Usage: fileripper transfer <host> <port> <user> <pass> [--upload <local> <remote_dest> | --download <remote>]")
+		fmt.Println("Usage: hydrasftp transfer <host> <port> <user> <pass> [--upload <local> <remote_dest> | --download <remote>]")
 		return
 	}
 
@@ -77,7 +77,7 @@ func handleTransferCLI(args []string) {
 
 	operation := "DOWNLOAD"
 	sourcePath := "."
-	destPath := "." 
+	destPath := "."
 
 	if len(args) > 6 {
 		mode := strings.ToLower(args[6])
@@ -112,11 +112,11 @@ func handleTransferCLI(args []string) {
 	fmt.Printf(">> CLI Mode: %s. Target: %s (%s@%s:%d)\n", operation, targetDisplay, user, host, port)
 
 	// --- DUAL SESSION INIT ---
-	var sessions []*fileripper.Session
+	var sessions []*hydrasftp.Session
 	fmt.Printf(">> Network: Establishing %d parallel tunnels...\n", SessionCount)
 
 	for i := 0; i < SessionCount; i++ {
-		sess := fileripper.NewSession(host, port, user, password)
+		sess := hydrasftp.NewSession(host, port, user, password)
 		if err := sess.Connect(); err != nil {
 			fmt.Printf("Error connecting session #%d: %v\n", i+1, err)
 			os.Exit(1)
@@ -130,7 +130,7 @@ func handleTransferCLI(args []string) {
 		}
 	}()
 
-	client := fileripper.NewClient()
+	client := hydrasftp.NewClient()
 	ctx := context.Background()
 	startTime := time.Now()
 
@@ -175,7 +175,7 @@ func handleTransferCLI(args []string) {
 		fmt.Printf("\r\033[KTransferred: %s / %s, 100%%, %.2f MB/s, ETA 0s | Files: %d/%d | %s\n",
 			formatBytes(stats.TotalBytes), formatBytes(stats.TotalBytes),
 			stats.SpeedMBs, stats.TotalFiles, stats.TotalFiles, totalElapsed)
-		
+
 		fmt.Printf(">> Status: Finished %s successfully in %s.\n", strings.ToLower(operation), totalElapsed)
 	} else {
 		fmt.Printf("\n>> Status: Transfer failed after %s: %v\n", totalElapsed, errTransfer)
@@ -208,11 +208,9 @@ func calculateETA(done, total int64, speedMBs float64) string {
 }
 
 func printUsage() {
-	fmt.Println(`
-Usage: fileripper [command] [args]
+	fmt.Println(`Usage: hydrasftp [command] [args]
 
 Commands:
   start-server [port]   Start REST API Daemon
-  transfer              <host> <port> <user> <pass> [--upload <local> <remote_dest> | --download <remote>]
-`)
+  transfer              <host> <port> <user> <pass> [--upload <local> <remote_dest> | --download <remote>]`)
 }

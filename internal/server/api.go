@@ -23,8 +23,8 @@ import (
 	"net/http"
 	"sync"
 
-	"fileripper/internal/network"
-	"fileripper/internal/pfte"
+	"hydrasftp/internal/network"
+	"hydrasftp/internal/pfte"
 )
 
 // Global state for the API daemon.

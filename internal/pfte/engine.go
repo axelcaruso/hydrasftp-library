@@ -27,7 +27,8 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"fileripper/internal/network"
+	"hydrasftp/internal/network"
+
 	"github.com/pkg/sftp"
 )
 

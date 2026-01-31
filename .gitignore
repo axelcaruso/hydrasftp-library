@@ -10,3 +10,4 @@ winscp_dump
 *.zip
 main
 build
+.snapshots

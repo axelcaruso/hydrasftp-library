@@ -5,17 +5,17 @@
   <img src="https://img.shields.io/badge/Version-v0.3.0-orange.svg" alt="Version">
 </p>
 
-# What is FileRipper?
+# What is HydraSFTP?
 
-FileRipper is an open-source library that accelerates file uploads and downloads using the SFTP protocol. It is written in Go.
+HydraSFTP is an open-source library that accelerates file uploads and downloads using the SFTP protocol. It is written in Go.
 
-Although FileRipper is still in alpha, it already significantly increases upload and download speeds.
+Although HydraSFTP is still in alpha, it already significantly increases upload and download speeds.
 
-The FileRipper code is licensed under the Apache-2.0 license.
+The HydraSFTP code is licensed under the Apache-2.0 license.
 
 ### **Important**
 
-**FileRipper is still a very early-stage library.**
+**HydraSFTP is still a very early-stage library.**
 
 This means that its stability is not guaranteed, nor is it necessarily bad; it is simply a development version and still lacks many features before it can be used in production. BUT for testing, it works very well, as file corruption is negligible or incredibly low.
 
@@ -23,14 +23,14 @@ This means that its stability is not guaranteed, nor is it necessarily bad; it i
 
 | Client | Data weight | Transferred folders | Transferred files | AVG Speed | Duration |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| FileRipper | 194.56 MiB | 497 | 3638 | 2.10 MiB/s | 1m 32s | 
+| HydraSFTP | 194.56 MiB | 497 | 3638 | 2.10 MiB/s | 1m 32s | 
 | WinSCP | 194.56 MiB | 497 | 3638 | 0.21 MiB/s | 15m 33s |  
 
-FileRipper is 10x faster
+HydraSFTP is 10x faster
 
 ---
 
-# Building FileRipper
+# Building HydraSFTP
 
 <p align="left">
   <img src="https://img.shields.io/badge/Build-welcome-red.svg">
@@ -64,10 +64,10 @@ go mod tidy
 3. Compile the production binary. We use flags to remove debug symbols and minimize the space used (this is for final versions).
 
 ```bash
-go build -ldflags "-s -w" -o fileripper.exe ./cmd/fileripper
+go build -ldflags "-s -w" -o build/hydrasftp.exe ./cmd/hydrasftp
 ```
 
-Result: If everything went well, you should see `fileripper.exe` (or the binary for your system) in your root directory. (It is recommended to compile for Windows at this time.)
+Result: If everything went well, you should see `hydrasftp.exe` (or the binary for your system) in your root directory. (It is recommended to compile for Windows at this time.)
 
 ---
 
@@ -77,13 +77,13 @@ Result: If everything went well, you should see `fileripper.exe` (or the binary 
 Before running the program in Linux, you must grant execute permissions to the binary. Otherwise, you will receive a "Permission denied" error. Run the following command:
 
 ```bash
-chmod +x fileripper_linux
+chmod +x build/hydrasftp_linux
 ```
 
 ## Syntax
 
 ```bash
-./[FileRipper_Executable] transfer <host> <port> <user> <password> <operation_flag>
+./[HydraSFTP_Executable] transfer <host> <port> <user> <password> <operation_flag>
 ```
 
 ### Parameters
@@ -106,12 +106,12 @@ The command requires one of the following flags to define the transfer direction
 
 ### Upload
 ```bash
-./fileripper_linux transfer 1.1.1.1 22 root mypassword --upload ./my_project
+./hydrasftp_linux transfer 1.1.1.1 22 root mypassword --upload ./my_project
 ```
 
 ### Download
 ```bash
-./fileripper_windows.exe transfer 1.1.1.1 22 root mypassword --download /example
+./hydrasftp_windows.exe transfer 1.1.1.1 22 root mypassword --download /example
 ```
 
 ---

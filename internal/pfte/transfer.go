@@ -25,7 +25,7 @@ import (
 	"sync"
 	"time"
 
-	"fileripper/internal/network"
+	"hydrasftp/internal/network"
 )
 
 const (
